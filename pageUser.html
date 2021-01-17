@@ -11,7 +11,7 @@
     }
     loadUser();
 
-    document.getElementById('submit-button').addEventListener('click', (event) => {
+    document.getElementById('submit-button').addEventListener('click', async (event) => {
         event.preventDefault();
         body = {
             email: document.getElementById('email').value,
