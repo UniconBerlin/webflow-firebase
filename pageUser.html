@@ -1,0 +1,24 @@
+<script>
+    const params = new URLSearchParams(window.location.search);
+    const loadUser = async () => {
+        
+        const uid = params.get('uid');
+        const data = await apiCall(`${API_URL}/user/${uid}`);
+
+        console.log(data);
+        document.getElementById('name').value = data.displayName;
+        document.getElementById('email').value = data.email
+    }
+    loadUser();
+
+    document.getElementById('submit-button').addEventListener('click', (event) => {
+        event.preventDefault();
+        body = {
+            email: document.getElementById('email').value,
+            displayName: document.getElementById('name').value
+        }
+        const uid = params.get('uid');
+        const data = await apiCall(`${API_URL}/user/${uid}`, method='PUT', body=JSON.stringify(body));
+        console.log(data);
+    })
+</script>

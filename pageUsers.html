@@ -1,0 +1,27 @@
+<script>
+    const loadUsers = async () => {
+        const data = await apiCall(`${API_URL}/users`);
+
+        const usersList = document.getElementById('users-list');
+
+        for (const user of data.users) {
+            const li = document.createElement('li');
+
+            const name = document.createElement('span');
+            name.innerText = user.displayName;
+            li.append(name);
+
+            const email = document.createElement('span');
+            email.innerText = user.email;
+            li.append(email);
+
+            const editButton = document.createElement('a');
+            editButton.innerHTML = '<button>Edit</button>';
+            editButton.setAttribute('href', `/admin/user?uid=${user.uid}`);
+            li.append(editButton);
+
+            usersList.append(li);
+        }
+    }
+    loadUsers();
+</script>

@@ -1,0 +1,140 @@
+<!-- Firebase App (the core Firebase SDK) is always required and must be listed first -->
+<script src="https://www.gstatic.com/firebasejs/8.2.3/firebase-app.js"></script>
+
+<!-- Add Firebase products that you want to use -->
+<script src="https://www.gstatic.com/firebasejs/8.2.3/firebase-auth.js"></script>
+
+<script>
+    // TODO: Replace the following with your app's Firebase project configuration
+    // For Firebase JavaScript SDK v7.20.0 and later, `measurementId` is an optional field
+    var firebaseConfig = {
+        apiKey: "AIzaSyDkMZv-KmcKXb_U5bU-A-T4k4B7A041VLk",
+        authDomain: "unicon-participants.firebaseapp.com",
+        databaseURL: "https://unicon-participants.firebaseio.com",
+        projectId: "unicon-participants",
+        storageBucket: "unicon-participants.appspot.com",
+        messagingSenderId: "837318024871",
+        appId: "1:837318024871:web:724f4fad04b58294d28582",
+    };
+
+    // Initialize Firebase
+    firebase.initializeApp(firebaseConfig);
+</script>
+
+<!-- Protect pages through redirect -->
+<script>
+    var privatePages = [
+        '/participants',
+        '/admin'
+    ]
+
+    var adminPrefix = '/admin';
+    var adminDomain = '@unicon.berlin'
+
+    var publicPages = [
+        '/log-in'
+    ]
+
+    firebase.auth().onAuthStateChanged(async (user) => {
+        var currentPath = window.location.pathname;
+        if (user) {
+            const idToken = await user.getIdToken();
+            setCookie('displayName', user.displayName);
+            setCookie('uid', user.uid);
+            setCookie('firebase_idToken', idToken);
+            // if user is logged in
+            if (currentPath.includes('/log-in')) {
+                // redirect to /participants if user is logged in
+                window.location.replace('/participants/home');
+            } else if (currentPath.includes(adminPrefix) && (!user.email.includes(adminDomain) || !user
+                    .emailVerified)) {
+                // redirect to participants home if user is not admin
+                window.location.replace('/participants/home');
+            } else {
+                var uid = user.uid;
+                console.log("User is logged in")
+                console.log(user.email);
+                loadingScreen.style.display = 'none';
+            }
+
+        } else {
+            // if user is not logged in
+            let public = true;
+            for (const page of privatePages) {
+                if (currentPath.includes(privatePages)) {
+                    public = false;
+                    window.location.replace('/log-in');
+                }
+            }
+            if (public) {
+                console.log("No user is logged in");
+                loadingScreen.style.display = 'none';
+            }
+
+        }
+    });
+</script>
+
+<!-- Logout button -->
+<script>
+    const logoutButton = document.getElementById("logout-button");
+    if (logoutButton !== null) {
+        logoutButton.addEventListener('click', (event) => {
+            event.preventDefault();
+            firebase.auth().signOut().then(function () {
+                deleteCookie('uid');
+                deleteCookie('displayName');
+                deleteCookie('firebase_idToken');
+                console.log('Signed Out');
+                window.location.replace('/')
+            }, function (error) {
+                console.error('Sign Out Error', error);
+            });
+        });
+    }
+</script>
+
+<!-- REST API Config -->
+<script>
+    const API_URL = "https://us-central1-unicon-participants.cloudfunctions.net/api";
+    const apiCall = async (url, method = 'GET', body = undefined) => {
+        let idToken = getCookie('firebase_idToken');
+        //const url = "https://us-central1-unicon-participants.cloudfunctions.net/api/users";
+        let options = {
+            method: method,
+            headers: {
+                Authorization: `Bearer ${idToken}`
+            },
+        }
+        if (body !== undefined) {
+            options.body = body;
+        }
+
+
+
+        const response = await fetch(url, options);
+        const data = await response.json();
+
+        return data;
+    }
+</script>
+
+<!-- Cookie management -->
+<script>
+    const setCookie = (name, value) => {
+        document.cookie = `${name}=${value}; expires=Fri, 31 Dec 2021 00:00:00 UTC; path=/; domain=unicon-2021.webflow.io`;
+    }
+
+    const getCookie = (name) => {
+        for (const cookie of document.cookie.split(';')) {
+            if (cookie.includes(name)) {
+                return cookie.replace(`${name}=`, '');
+            }
+        }
+        return "Cannot find cookie";
+    }
+
+    const deleteCookie = (name) => {
+        document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; domain=unicon-2021.webflow.io`
+    }
+</script>
