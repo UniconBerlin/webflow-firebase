@@ -96,10 +96,9 @@
 
 <!-- REST API Config -->
 <script>
-    const API_URL = "https://us-central1-unicon-participants.cloudfunctions.net/api";
+    const API_URL = "https://europe-west1-unicon-participants.cloudfunctions.net/a/api";
     const apiCall = async (url, method = 'GET', body = undefined) => {
         let idToken = getCookie('firebase_idToken');
-        //const url = "https://us-central1-unicon-participants.cloudfunctions.net/api/users";
         let options = {
             method: method,
             headers: {
