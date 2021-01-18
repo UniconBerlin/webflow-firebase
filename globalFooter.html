@@ -43,6 +43,9 @@
             setCookie('uid', user.uid);
             setCookie('firebase_idToken', idToken);
             // if user is logged in
+          	if (user.email.includes(adminDomain)) {
+            	document.getElementById('admin-button').style.display = 'flex'    
+            }
             if (currentPath.includes('/log-in')) {
                 // redirect to /participants if user is logged in
                 window.location.replace('/participants/home');
