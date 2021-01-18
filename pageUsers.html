@@ -4,23 +4,30 @@
 
         const usersList = document.getElementById('users-list');
 
+        const listItems = document.getElementsByClassName('users-list-item');
+
+        let i = 0;
         for (const user of data.users) {
-            const li = document.createElement('li');
-
-            const name = document.createElement('span');
+            let li;
+            if(i === 0){
+                li = listItems[0]
+            } else {
+                li = listItems[i-1].cloneNode(true)
+            }
+            console.log(li);
+            const name = li.getElementsByClassName('users-list-item-name')[0];
             name.innerText = user.displayName;
-            li.append(name);
 
-            const email = document.createElement('span');
+            const email = li.getElementsByClassName('users-list-item-email')[0];
             email.innerText = user.email;
-            li.append(email);
 
-            const editButton = document.createElement('a');
-            editButton.innerHTML = '<button>Edit</button>';
+            const editButton = li.getElementsByClassName('users-list-item-button')[0];
             editButton.setAttribute('href', `/admin/user?uid=${user.uid}`);
-            li.append(editButton);
 
-            usersList.append(li);
+            usersList.appendChild(li);
+
+            i++;
+            
         }
     }
     loadUsers();
