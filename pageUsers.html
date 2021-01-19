@@ -1,7 +1,7 @@
 <script>
     const loadUsers = async () => {
         document.getElementById('error-load-users').style.display = 'none';
-        const data = await apiCall(`${API_URL}/users`);
+
         apiCall(`${API_URL}/users`).then((data) => {
             const usersList = document.getElementById('users-list');
 

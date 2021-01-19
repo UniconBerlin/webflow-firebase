@@ -3,7 +3,7 @@
     const loadUser = async () => {
 
         const uid = params.get('uid');
-        //const data = await apiCall(`${API_URL}/users/${uid}`);
+
         apiCall(`${API_URL}/users/${uid}`).then((data) => {
             console.log(data);
             document.getElementById('name').value = data.displayName;
@@ -14,10 +14,12 @@
             document.getElementById('date-created').value = data.metadata.creationTime;
             document.getElementById('last-signin').value = data.metadata.lastSignInTime;
 
-            document.getElementById('loading-div').style.display = 'none';
+            
         }).catch((error) => {
             console.log(error);
-            // show error message
+            // TODO: show error message
+        }).finally(() => {
+            document.getElementById('loading-div').style.display = 'none';
         })
 
 
@@ -34,13 +36,13 @@
             disabled: document.getElementById('disabled').checked
         }
         const uid = params.get('uid');
-        //const data = await apiCall(`${API_URL}/users/${uid}`, method = 'PATCH', body = JSON.stringify(body));
+
         apiCall(`${API_URL}/users/${uid}`, method = 'PATCH', body = JSON.stringify(body)).then(data => {
             console.log(data);
-            //show succes message
+            // TODO: show succes message
         }).catch(error => {
             console.log(error);
-            // show error message
+            // TODO: show error message
         }).finally(() => {
             document.getElementById('loading-div').style.display = 'none';
         })
@@ -55,10 +57,10 @@
         //const data = await apiCall(`${API_URL}/users/${uid}/password-reset`, method = 'POST');
         apiCall(`${API_URL}/users/${uid}/password-reset`, method = 'POST').then(data => {
             console.log(data);
-            // show success message
+            // TODO: show success message
         }).catch(error => {
             console.log(error);
-            // show error message
+            // TODO: show error message
         }).finally(() => {
             document.getElementById('loading-div').style.display = 'none';
         })
@@ -69,13 +71,13 @@
         event.preventDefault();
         document.getElementById('loading-div').style.display = 'flex';
         const uid = params.get('uid');
-        //const data = await apiCall(`${API_URL}/users/${uid}/email-verify`, method = 'POST');
+
         apiCall(`${API_URL}/users/${uid}/email-verify`, method = 'POST').then(data => {
             console.log(data);
-            // show success message
+            // TODO: show success message
         }).catch(error => {
             console.log(error);
-            // show error message
+            // TODO: show error message
         }).finally(() => {
             document.getElementById('loading-div').style.display = 'none';
         })
