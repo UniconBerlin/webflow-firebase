@@ -3,18 +3,23 @@
     const loadUser = async () => {
 
         const uid = params.get('uid');
-        const data = await apiCall(`${API_URL}/users/${uid}`);
+        //const data = await apiCall(`${API_URL}/users/${uid}`);
+        apiCall(`${API_URL}/users/${uid}`).then((data) => {
+            console.log(data);
+            document.getElementById('name').value = data.displayName;
+            document.getElementById('email').value = data.email;
+            document.getElementById('email-verified').checked = data.emailVerified;
+            document.getElementById('disabled').checked = data.disabled;
+            document.getElementById('firebase-uid').value = data.uid;
+            document.getElementById('date-created').value = data.metadata.creationTime;
+            document.getElementById('last-signin').value = data.metadata.lastSignInTime;
 
-        console.log(data);
-        document.getElementById('name').value = data.displayName;
-        document.getElementById('email').value = data.email;
-        document.getElementById('email-verified').checked = data.emailVerified;
-        document.getElementById('disabled').checked = data.disabled;
-        document.getElementById('firebase-uid').value = data.uid;
-        document.getElementById('date-created').value = data.metadata.creationTime;
-        document.getElementById('last-signin').value = data.metadata.lastSignInTime;
+            document.getElementById('loading-div').style.display = 'none';
+        }).catch((error) => {
+            console.log(error);
+            // show error message
+        })
 
-        document.getElementById('loading-div').style.display = 'none';
 
     }
     loadUser();
@@ -29,29 +34,56 @@
             disabled: document.getElementById('disabled').checked
         }
         const uid = params.get('uid');
-        const data = await apiCall(`${API_URL}/users/${uid}`, method = 'PATCH', body = JSON.stringify(body));
-        console.log(data);
-        document.getElementById('loading-div').style.display = 'none';
+        //const data = await apiCall(`${API_URL}/users/${uid}`, method = 'PATCH', body = JSON.stringify(body));
+        apiCall(`${API_URL}/users/${uid}`, method = 'PATCH', body = JSON.stringify(body)).then(data => {
+            console.log(data);
+            //show succes message
+        }).catch(error => {
+            console.log(error);
+            // show error message
+        }).finally(() => {
+            document.getElementById('loading-div').style.display = 'none';
+        })
+
+
     });
 
     document.getElementById('reset-password-button').addEventListener('click', async (event) => {
         event.preventDefault();
         document.getElementById('loading-div').style.display = 'flex';
         const uid = params.get('uid');
-        const data = await apiCall(`${API_URL}/users/${uid}/password-reset`, method = 'POST');
-        document.getElementById('loading-div').style.display = 'none';
+        //const data = await apiCall(`${API_URL}/users/${uid}/password-reset`, method = 'POST');
+        apiCall(`${API_URL}/users/${uid}/password-reset`, method = 'POST').then(data => {
+            console.log(data);
+            // show success message
+        }).catch(error => {
+            console.log(error);
+            // show error message
+        }).finally(() => {
+            document.getElementById('loading-div').style.display = 'none';
+        })
+        
     });
 
     document.getElementById('resend-verification-button').addEventListener('click', async (event) => {
         event.preventDefault();
         document.getElementById('loading-div').style.display = 'flex';
         const uid = params.get('uid');
-        const data = await apiCall(`${API_URL}/users/${uid}/email-verify`, method = 'POST');
-        document.getElementById('loading-div').style.display = 'none';
+        //const data = await apiCall(`${API_URL}/users/${uid}/email-verify`, method = 'POST');
+        apiCall(`${API_URL}/users/${uid}/email-verify`, method = 'POST').then(data => {
+            console.log(data);
+            // show success message
+        }).catch(error => {
+            console.log(error);
+            // show error message
+        }).finally(() => {
+            document.getElementById('loading-div').style.display = 'none';
+        })
+        
     });
 
     const disabledFields = document.getElementsByClassName('disabled-field');
-    for(const field of disabledFields){
+    for (const field of disabledFields) {
         field.setAttribute('disabled', true);
     };
 </script>

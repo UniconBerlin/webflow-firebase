@@ -2,40 +2,44 @@
     const loadUsers = async () => {
         document.getElementById('error-load-users').style.display = 'none';
         const data = await apiCall(`${API_URL}/users`);
+        apiCall(`${API_URL}/users`).then((data) => {
+            const usersList = document.getElementById('users-list');
 
-        const usersList = document.getElementById('users-list');
+            const listItems = document.getElementsByClassName('users-list-item');
 
-        const listItems = document.getElementsByClassName('users-list-item');
+            let i = 0;
+            console.log(data)
+            if (Symbol.iterator in Object(data.users)) {
+                for (const user of data.users) {
+                    let li;
+                    if (i === 0) {
+                        li = listItems[0]
+                    } else {
+                        li = listItems[i - 1].cloneNode(true)
+                    }
+                    console.log(li);
+                    const name = li.getElementsByClassName('users-list-item-name')[0];
+                    name.innerText = user.displayName;
 
-        let i = 0;
-        console.log(data)
-        if (Symbol.iterator in Object(data.users)) {
-            for (const user of data.users) {
-                let li;
-                if (i === 0) {
-                    li = listItems[0]
-                } else {
-                    li = listItems[i - 1].cloneNode(true)
+                    const email = li.getElementsByClassName('users-list-item-email')[0];
+                    email.innerText = user.email;
+
+                    const editButton = li.getElementsByClassName('users-list-item-button')[0];
+                    editButton.setAttribute('href', `/admin/user?uid=${user.uid}`);
+
+                    usersList.appendChild(li);
+
+                    i++;
                 }
-                console.log(li);
-                const name = li.getElementsByClassName('users-list-item-name')[0];
-                name.innerText = user.displayName;
-
-                const email = li.getElementsByClassName('users-list-item-email')[0];
-                email.innerText = user.email;
-
-                const editButton = li.getElementsByClassName('users-list-item-button')[0];
-                editButton.setAttribute('href', `/admin/user?uid=${user.uid}`);
-
-                usersList.appendChild(li);
-
-                i++;
+            } else {
+                document.getElementById('error-load-users').style.display = 'flex';
             }
-        } else {
+        }).catch((error) => {
+            console.log(error);
             document.getElementById('error-load-users').style.display = 'flex';
-        }
-
-        document.getElementsByClassName('loading-div')[0].style.display = 'none';
+        }).finally(() => {
+            document.getElementsByClassName('loading-div')[0].style.display = 'none';
+        })
 
     }
     loadUsers();
