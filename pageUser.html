@@ -14,11 +14,14 @@
         document.getElementById('date-created').value = data.metadata.creationTime;
         document.getElementById('last-signin').value = data.metadata.lastSignInTime;
 
+        document.getElementById('loading-div').style.display = 'none';
+
     }
     loadUser();
 
     document.getElementById('submit-button').addEventListener('click', async (event) => {
         event.preventDefault();
+        document.getElementById('loading-div').style.display = 'flex';
         body = {
             email: document.getElementById('email').value,
             emailVerified: document.getElementById('email-verified').checked,
@@ -28,18 +31,23 @@
         const uid = params.get('uid');
         const data = await apiCall(`${API_URL}/users/${uid}`, method = 'PATCH', body = JSON.stringify(body));
         console.log(data);
+        document.getElementById('loading-div').style.display = 'none';
     });
 
     document.getElementById('reset-password-button').addEventListener('click', async (event) => {
         event.preventDefault();
+        document.getElementById('loading-div').style.display = 'flex';
         const uid = params.get('uid');
         const data = await apiCall(`${API_URL}/users/${uid}/password-reset`, method = 'POST');
+        document.getElementById('loading-div').style.display = 'none';
     });
 
     document.getElementById('resend-verification-button').addEventListener('click', async (event) => {
         event.preventDefault();
+        document.getElementById('loading-div').style.display = 'flex';
         const uid = params.get('uid');
         const data = await apiCall(`${API_URL}/users/${uid}/email-verify`, method = 'POST');
+        document.getElementById('loading-div').style.display = 'none';
     });
 
     const disabledFields = document.getElementsByClassName('disabled-field');
