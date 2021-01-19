@@ -1,13 +1,18 @@
 <script>
     const params = new URLSearchParams(window.location.search);
     const loadUser = async () => {
-        
+
         const uid = params.get('uid');
-        const data = await apiCall(`${API_URL}/user/${uid}`);
+        const data = await apiCall(`${API_URL}/users/${uid}`);
 
         console.log(data);
         document.getElementById('name').value = data.displayName;
-        document.getElementById('email').value = data.email
+        document.getElementById('email').value = data.email;
+        document.getElementById('disabled').value = data.disabled;
+        document.getElementById('firebase-uid').value = data.uid;
+        document.getElementById('date-created').value = data.metadata.creationTime;
+        document.getElementById('last-signin').value = data.metadata.lastSignInTime;
+
     }
     loadUser();
 
@@ -15,10 +20,22 @@
         event.preventDefault();
         body = {
             email: document.getElementById('email').value,
-            displayName: document.getElementById('name').value
+            displayName: document.getElementById('name').value,
+            disabled: document.getElementById('disabled').value
         }
         const uid = params.get('uid');
-        const data = await apiCall(`${API_URL}/user/${uid}`, method='PUT', body=JSON.stringify(body));
+        const data = await apiCall(`${API_URL}/users/${uid}`, method = 'PATCH', body = JSON.stringify(body));
         console.log(data);
-    })
+    });
+
+    document.getElementById('reset-password-button').addEventListener('click', async (event) => {
+        event.preventDefault();
+        const uid = params.get('uid');
+        const data = await apiCall(`${API_URL}/users/${uid}/password-reset`, method = 'POST');
+    });
+
+    const disabledFields = document.getElementsByClassName('disabled-field');
+    disabledFields.forEach((field) => {
+        field.setAttribute('disabled', true);
+    });
 </script>
