@@ -8,8 +8,8 @@
         console.log(data);
         document.getElementById('name').value = data.displayName;
         document.getElementById('email').value = data.email;
-        document.getElementById('email-verified').value = data.emailVerified;
-        document.getElementById('disabled').value = data.disabled;
+        document.getElementById('email-verified').checked = data.emailVerified;
+        document.getElementById('disabled').checked = data.disabled;
         document.getElementById('firebase-uid').value = data.uid;
         document.getElementById('date-created').value = data.metadata.creationTime;
         document.getElementById('last-signin').value = data.metadata.lastSignInTime;
@@ -21,9 +21,9 @@
         event.preventDefault();
         body = {
             email: document.getElementById('email').value,
-            emailVerified: document.getElementById('email-verified').value,
+            emailVerified: document.getElementById('email-verified').checked,
             displayName: document.getElementById('name').value,
-            disabled: document.getElementById('disabled').value
+            disabled: document.getElementById('disabled').checked
         }
         const uid = params.get('uid');
         const data = await apiCall(`${API_URL}/users/${uid}`, method = 'PATCH', body = JSON.stringify(body));
@@ -43,7 +43,7 @@
     });
 
     const disabledFields = document.getElementsByClassName('disabled-field');
-    disabledFields.forEach((field) => {
+    for(const field of disabledFields){
         field.setAttribute('disabled', true);
-    });
+    };
 </script>
