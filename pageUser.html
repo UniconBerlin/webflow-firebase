@@ -8,6 +8,7 @@
         console.log(data);
         document.getElementById('name').value = data.displayName;
         document.getElementById('email').value = data.email;
+        document.getElementById('email-verified').value = data.emailVerified;
         document.getElementById('disabled').value = data.disabled;
         document.getElementById('firebase-uid').value = data.uid;
         document.getElementById('date-created').value = data.metadata.creationTime;
@@ -20,6 +21,7 @@
         event.preventDefault();
         body = {
             email: document.getElementById('email').value,
+            emailVerified: document.getElementById('email-verified').value,
             displayName: document.getElementById('name').value,
             disabled: document.getElementById('disabled').value
         }
@@ -32,6 +34,12 @@
         event.preventDefault();
         const uid = params.get('uid');
         const data = await apiCall(`${API_URL}/users/${uid}/password-reset`, method = 'POST');
+    });
+
+    document.getElementById('resend-verification-button').addEventListener('click', async (event) => {
+        event.preventDefault();
+        const uid = params.get('uid');
+        const data = await apiCall(`${API_URL}/users/${uid}/email-verify`, method = 'POST');
     });
 
     const disabledFields = document.getElementsByClassName('disabled-field');
