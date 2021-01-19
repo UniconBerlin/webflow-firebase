@@ -32,22 +32,28 @@
     var adminDomain = '@unicon.berlin'
 
     var publicPages = [
-        '/log-in'
+        '/login'
     ]
 
     firebase.auth().onAuthStateChanged(async (user) => {
         var currentPath = window.location.pathname;
+        console.log(user);
         if (user) {
             const idToken = await user.getIdToken();
             setCookie('displayName', user.displayName);
             setCookie('uid', user.uid);
             setCookie('firebase_idToken', idToken);
             // if user is logged in
-          	if (user.email.includes(adminDomain)) {
-            	document.getElementById('admin-button').style.display = 'flex'    
+            if (user.email.includes(adminDomain)) {
+                const adminBtn = document.getElementById('admin-button')
+                if(adminBtn){
+                    adminBtn.style.display = 'flex';
+                } 
             }
-            if (currentPath.includes('/log-in')) {
-                // redirect to /participants if user is logged in
+
+            if (currentPath.includes('/login')) {
+                console.log("Already logged in")
+                // redirect to /participants/home if user is logged in
                 window.location.replace('/participants/home');
             } else if (currentPath.includes(adminPrefix) && (!user.email.includes(adminDomain) || !user
                     .emailVerified)) {
@@ -57,21 +63,21 @@
                 var uid = user.uid;
                 console.log("User is logged in")
                 console.log(user.email);
-                loadingScreen.style.display = 'none';
+                document.getElementById('loadingScreen').style.display = 'none';
             }
 
         } else {
             // if user is not logged in
             let public = true;
             for (const page of privatePages) {
-                if (currentPath.includes(privatePages)) {
+                if (currentPath.includes(page)) {
                     public = false;
-                    window.location.replace('/log-in');
+                    window.location.replace('/login');
                 }
             }
             if (public) {
                 console.log("No user is logged in");
-                loadingScreen.style.display = 'none';
+                document.getElementById('loadingScreen').style.display = 'none';
             }
 
         }
@@ -124,7 +130,8 @@
 <!-- Cookie management -->
 <script>
     const setCookie = (name, value) => {
-        document.cookie = `${name}=${value}; expires=Fri, 31 Dec 2021 00:00:00 UTC; path=/; domain=unicon-2021.webflow.io`;
+        document.cookie =
+            `${name}=${value}; expires=Fri, 31 Dec 2021 00:00:00 UTC; path=/; domain=unicon-2021.webflow.io`;
     }
 
     const getCookie = (name) => {
@@ -133,7 +140,7 @@
                 return cookie.replace(`${name}=`, '');
             }
         }
-        return "Cannot find cookie";
+        return undefined;
     }
 
     const deleteCookie = (name) => {
